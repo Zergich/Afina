@@ -1,0 +1,87 @@
+﻿<Window x:Class="Afina.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:Wpf="clr-namespace:Patagames.Pdf.Net.Controls.Wpf;assembly=Patagames.Pdf.Wpf"
+        xmlns:Toolbars="clr-namespace:Patagames.Pdf.Net.Controls.Wpf.ToolBars;assembly=Patagames.Pdf.Wpf"
+        Title="Afina" Height="500" Width="800" Icon="/icons8-книга-100.png" Closed="Window_Closed" MouseDown="Window_MouseDown" MouseWheel="Image_MouseWheel" >
+    <Grid>
+        <Grid Name="Menu"  Background="#FFECECEC" HorizontalAlignment="Left" Width="120">
+            <Button Name="a" Content="Библиотека" HorizontalAlignment="Left" Margin="3,3,0,0" VerticalAlignment="Top" Width="73" RenderTransformOrigin="0.444,0.162" BorderBrush="#00707070" FontWeight="Bold" Click="GoToLiberAndClosePdf_Click"/>
+            <ListView Name="Katalog" Margin="0,131,0,36" BorderBrush="#00ABADB3" Background="#FFECECEC" MouseDoubleClick="ShowBooksInCatalog_Click"/>
+            <Label Name="b" Content="Каталог" HorizontalAlignment="Left" Margin="0,105,0,0" VerticalAlignment="Top" Width="82" FontWeight="Bold"/>
+            <Button Name="c" Content="Другие" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" BorderBrush="#00707070" Width="73" RenderTransformOrigin="0.74,0.503" Click="AnotherBook_Click" FontWeight="Bold"/>
+
+            <Button Name="HideMenu" Visibility="Hidden" Content="≡" HorizontalAlignment="Left" Margin="95,3,0,0" VerticalAlignment="Top" Width="23" BorderBrush="#00707070" FontSize="18" Click="HideMenu_Click" FontWeight="Bold"/>
+            <Button Name="ReturnMenu" Visibility="Hidden" Content="≡" HorizontalAlignment="Left" Margin="0,-1,0,0" VerticalAlignment="Top" Width="23" BorderBrush="#00707070" FontSize="18" Click="ShowMenu_Click" FontWeight="Bold"/>
+            <Button Name="O" Content="Открыть" HorizontalAlignment="Left" Margin="3,0,0,10" Width="79" BorderBrush="#00707070" Click="OpenFolder_Click" Height="20" VerticalAlignment="Bottom"/>
+            <Button Content="+" HorizontalAlignment="Left" Margin="95,60,0,0" VerticalAlignment="Top" Width="23" Click="AddAnother_Click" BorderBrush="#00707070" FontWeight="Bold" FontSize="14"/>
+            <Button Name="DeletCatalogItems"  Content="➖" HorizontalAlignment="Left" Margin="92,0,0,10" BorderBrush="#00707070" Width="26" FontWeight="Bold" FontSize="11" Click="DeletCatalogItems_Click" Height="21" VerticalAlignment="Bottom"/>
+            <Button Visibility="Collapsed" Name="Settings" Content="⚙️" HorizontalAlignment="Left" Margin="4,90,0,0" VerticalAlignment="Top" Height="20" Width="37" BorderBrush="#00707070" FontWeight="Bold" Click="Settings_Click"/>
+
+        </Grid>
+
+        <Grid Name="Moy" Visibility="Hidden" Margin="120,0,0,0" Focusable="True">
+            <Image Name="Left"  Margin="170,2,170,0" Stretch="Fill" StretchDirection="DownOnly"/>
+            <TextBlock Name="CurrentPage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="97" FontWeight="Bold" Margin="28,0,0,0"/>
+            <TextBox Name="SetPage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="28" FontWeight="Bold" BorderBrush="#00ABADB3" KeyDown="SetPage_KeyDown"/>
+
+            <Button Name="ZoomP" Content="+" Margin="0,0,45,6" VerticalAlignment="Bottom" BorderBrush="#00707070" FontWeight="Bold" HorizontalAlignment="Right" Width="20" FontSize="14" Height="20" Click="ZoomP_Click"/>
+            <Button Name="ZoomM" Content="➖" HorizontalAlignment="Right" Margin="0,0,20,6" VerticalAlignment="Bottom" BorderBrush="#00707070"/>
+        </Grid>
+
+        <Grid Name="SettingsMenu" Visibility="Collapsed" Margin="218,110,176,109" Background="Gainsboro">
+            <TextBlock  Text="Тема" Margin="20,0,0,220" HorizontalAlignment="Left" Width="100" Height="19" VerticalAlignment="Bottom"/>
+            <ComboBox Name="Theames" Margin="55,0,246,220" Height="19" VerticalAlignment="Bottom" SelectionChanged="TheamComboBox_SelectionChanged">
+                <ComboBoxItem>
+                    <TextBlock>Светлая</TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <TextBlock>Темная</TextBlock>
+                </ComboBoxItem>
+            </ComboBox>
+            <ComboBox Name="Readers" Margin="108,0,163,193" Height="19" VerticalAlignment="Bottom" SelectionChanged="ReaderComboBox_SelectionChanged">
+                <ComboBoxItem>
+                    <TextBlock>Моталка</TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <TextBlock>Переключалка</TextBlock>
+                </ComboBoxItem>
+            </ComboBox>
+
+
+            <TextBlock  Text="Режим чтения" Margin="20,0,0,196" HorizontalAlignment="Left" Width="100" Height="19" VerticalAlignment="Bottom"/>
+            <Button Content="❌" HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="#00707070" Height="26" Width="26" Click="Button_Click"/>
+        </Grid>
+
+        <Grid Name="Lib" Visibility="Visible" Margin="120,0,0,0">
+            <ScrollViewer Name="ScrollBooks" Visibility="Visible">
+                <WrapPanel Name="Books"/>
+            </ScrollViewer>
+
+            <Grid Name="Reading" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ToolBarTray Name="Toolbar" Grid.Row="0">
+                    <Toolbars:PdfToolBarPages PdfViewer="{Binding ElementName=pdffile}" Name="BarPages"></Toolbars:PdfToolBarPages>
+                    <Toolbars:PdfToolBarSizes  PdfViewer="{Binding ElementName=pdffile}" ></Toolbars:PdfToolBarSizes>
+                    <Toolbars:PdfToolBarViewModes PdfViewer="{Binding ElementName=pdffile}" ></Toolbars:PdfToolBarViewModes>
+                    <Toolbars:PdfToolBarZoomEx Name="SizePanel" PdfViewer="{Binding ElementName=pdffile}" ></Toolbars:PdfToolBarZoomEx>
+                </ToolBarTray>
+
+                <ScrollViewer Grid.Row="1" CanContentScroll="True"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Wpf:PdfViewer Name="pdffile" />
+                </ScrollViewer>
+            </Grid>
+
+
+
+        </Grid>
+
+    </Grid>
+</Window>
